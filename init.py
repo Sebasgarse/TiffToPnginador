@@ -1,20 +1,23 @@
-from PIL import Image
+from sys import argv
 import os.path as path
 from os import walk
-from sys import argv
+
+from PIL import Image
 
 if __name__ == '__main__':
     dir_name = argv[1]
-    
+
     if path.exists(dir_name) and path.isdir(dir_name):
 
         listOfFiles = list()
         for (dirpath, dirnames, filenames) in walk(dir_name):
             listOfFiles += [
-                path.join(dirpath, file) for file 
-                in filenames 
-                if '.git' not in dirpath and path.splitext(path.join(dirpath, file))[1].lower() == '.tif' 
-                or '.git' not in dirpath and path.splitext(path.join(dirpath, file))[1].lower() == '.tiff'
+                path.join(dirpath, file) for file
+                in filenames
+                if '.git' not in dirpath and
+                path.splitext(path.join(dirpath, file))[1].lower() == '.tif'
+                or '.git' not in dirpath and
+                path.splitext(path.join(dirpath, file))[1].lower() == '.tiff'
             ]
 
         i = 0
@@ -25,15 +28,14 @@ if __name__ == '__main__':
             if image_tiff != outfile:
                 try:
                     with Image.open(image_tiff) as im:
-                        if (not path.exists(outfile)):
+                        if not path.exists(outfile):
                             im.save(outfile)
                 except OSError:
                     print("cannot convert", image_tiff)
 
             i = i + 1
             archive_max_count = len(listOfFiles)
-            percent = 100 * ( i / archive_max_count )
+            percent = 100 * (i / archive_max_count)
             percent = int(percent)
-            complete_text = '\rCompletado ' + str(percent) + '%'
-            print(complete_text, end='', flush=True)
-
+            COMPLETE_TEXT = '\rCompletado ' + str(percent) + '%'
+            print(COMPLETE_TEXT, end='', flush=True)
